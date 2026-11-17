@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Login | MILZ GRAND HOTEL{% endblock %}
+
+{% block site_header %}{% endblock %}
+
+{% block content %}
+    <div class="Logincentering">
+        <h2>Hotel Sign In</h2>
+        <div class="LoginStyle">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Login</button>
+            </form>
+            <p>New to MILZ GRAND HOTEL? <a href="{% url 'register' %}">Create an account</a></p>
+        </div>
+    </div>
+{% endblock %}

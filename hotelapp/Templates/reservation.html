@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Reservations | MILZ GRAND HOTEL{% endblock %}
+
+{% block content %}
+    <h2>Reservation Registration</h2>
+
+    <form method="post" {% if is_editing %}action="{% url 'update_reservation' pk=editing_record.pk %}"{% else %}action="{% url 'add_reservation' %}"{% endif %} novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">{% if is_editing %}Update reservation{% else %}Create reservation{% endif %}</button>
+        {% if is_editing %}<a href="{% url 'reservation' %}">Cancel editing</a>{% else %}<button type="reset">Clear</button>{% endif %}
+    </form>
+
+    <h2>RESERVATION TABLE</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ReservationId</th>
+                <th>GuestId</th>
+                <th>RoomId</th>
+                <th>ReservationDate</th>
+                <th>CheckInDate</th>
+                <th>CheckOutDate</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for reservation in reservations %}
+            <tr>
+                <td>{{ reservation.reservation_id }}</td>
+                <td>{{ reservation.guest.guest_id }}</td>
+                <td>{{ reservation.room.room_id }}</td>
+                <td>{{ reservation.reservation_date|date:"Y-m-d" }}</td>
+                <td>{{ reservation.check_in_date|date:"Y-m-d" }}</td>
+                <td>{{ reservation.check_out_date|date:"Y-m-d" }}</td>
+                <td>{{ reservation.status }}</td>
+                <td>
+                    <a href="{% url 'update_reservation' pk=reservation.pk %}">Edit</a>
+                    <form method="post" action="{% url 'delete_reservation' pk=reservation.pk %}" onsubmit="return confirm('Delete this reservation?');">
+                        {% csrf_token %}
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}<tr><td colspan="8">No reservations saved yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
